@@ -6,8 +6,11 @@ var path = require("path");
  * without rejecting path traversal sequences.
  */
 function readUserFile(userPath) {
-  var base = path.join(__dirname, "..", "data");
-  var target = path.join(base, userPath);
+  var base = path.resolve(__dirname, "..", "data");
+  var target = path.resolve(base, String(userPath));
+  if (target !== base && !target.startsWith(base + path.sep)) {
+    throw new Error("Path escapes the data directory");
+  }
   return fs.readFileSync(target, "utf8");
 }
 
